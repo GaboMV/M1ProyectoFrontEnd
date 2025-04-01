@@ -1,0 +1,54 @@
+.container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+.empleado-card {
+  border: 2px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+  width: 250px;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+/* Estilos para empleados activos */
+.empleado-card.activo {
+  background-color: #d4edda; /* Verde claro */
+  border-color: #28a745;
+  color: #155724;
+}
+/* Estilos para empleados inactivos */
+.empleado-card.inactivo {
+  background-color: #f8d7da; /* Rojo claro */
+  border-color: #dc3545;
+  color: #721c24;
+}
+/* Estado Activo e Inactivo (Texto) */
+.estado-activo {
+  color: #28a745;
+  font-weight: bold;
+}
+.estado-inactivo {
+  color: #dc3545;
+  font-weight: bold;
+}
+/* Botón de cambiar estado */
+.cambiar-estado-btn {
+  padding: 5px 10px;
+  margin-top: 5px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+}
+.cambiar-estado-btn:hover {
+  background-color: #0056b3;
+}
+/* Estilos para el selector */
+select {
+  padding: 5px;
+  margin: 10px;
+  font-size: 16px;
+}
