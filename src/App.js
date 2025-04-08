@@ -1,51 +1,58 @@
-import React, { Component } from "react"; // Importa React y
-    import "./estilos/App.css";
-    import empleadosData from "./datos/empleados.json";
-    import CmpEmpleados from "./componentes/CmpEmpleados";
+// src/App.js
+import React, {useEffect, useState} from 'react';
+import estilo from './estilos/estilo.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './Context/AuthContext';
+import Navbar from './componentes/Navbar';
+import Home from './Paginas/Home';
+import Login from './Paginas/Login';
+import Register from './Paginas/Register';
+import Dashboard from './Paginas/Dashboard';
+function App() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-class App extends Component {
-    constructor(props) {
-        super(props); // Llama adl constructor de la clase `Component`.
-        this.state = {
-            empleados: empleadosData, // Carga la lista de empleados desde el JSON.
-            filtro: "todos", // Estado inicial del filtro: muestra todos los
+    useEffect(() => {
+        // Verificar si el token está en el localStorage para determinar si el usuario está autenticado
+        const token = localStorage.getItem('token');
+        if (token) {
+            setIsAuthenticated(true);
+        }
+    }, []);
 
-        };
-    }
-    cambiarEstadoEmpleado = (id) => {
-        this.setState((prevState) => ({
-            empleados: prevState.empleados.map((empleado) =>
-                empleado.id === id ? { ...empleado, activo: !empleado.activo } : empleado
-            ),
-        }));
+    const handleLogin = () => {
+        setIsAuthenticated(true); // Cuando el usuario inicie sesión
     };
-    // Función para actualizar el filtro
-    cambiarFiltro = (event) => {
-        this.setState({ filtro: event.target.value });
-    };
 
-    render() {
-        const empleadosFiltrados = this.state.empleados.filter((empleado) => {
-            if (this.state.filtro === "activos") return empleado.activo;
-            if (this.state.filtro === "inactivos") return !empleado.activo;
-            return true; // "todos" muestra todos
-        });
-        return (
-            <div className="container">
-                <h1>Gestor de Empleados</h1>
-                )
-                {/* Selector para filtrar empleados */}
-                <label>Filtrar por estado: </label>
-                <select onChange={this.cambiarFiltro} value={this.state.filtro}>
-                    <option value="todos">Todos</option>
-                    <option value="activos">Activos</option>
-                    <option value="inactivos">Inactivos</option>
-                </select>
-                <CmpEmpleados empleados={empleadosFiltrados}
-                              cambiarEstado={this.cambiarEstadoEmpleado} />
-            </div>
-        );
-    }
+    const handleLogout = () => {
+        setIsAuthenticated(false); // Cuando el usuario cierre sesión
+        localStorage.removeItem('token');
+    };
+    return (
+
+        <AuthProvider>
+            <div className={estilo.container}>
+            {/* Aquí va tu Navbar, rutas, etc. */}
+            <Router>
+                <Navbar isAuthenticated={isAuthenticated}
+                        onLogout={handleLogout} />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route
+                        path="/login"
+                        element={<Login onLogin={handleLogin} />}
+                    />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard isAuthenticated={isAuthenticated} />}
+                    />
+                </Routes>
+            </Router>
+        </div>
+        </AuthProvider>
+
+    );
 }
+
 
 export default App;
