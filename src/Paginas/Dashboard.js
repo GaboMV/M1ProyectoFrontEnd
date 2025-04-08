@@ -12,6 +12,8 @@ const Dashboard = () => {
     const [dueDateFilter, setDueDateFilter] = useState('');
     const [selectedTask, setSelectedTask] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false); // Nuevo estado para el modal de agregar tarea
+    const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' }); // Nuevo estado para la nueva tarea
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -137,6 +139,45 @@ const Dashboard = () => {
         }));
     };
 
+    const openAddModal = () => {
+        setShowAddModal(true);
+    };
+
+    const closeAddModal = () => {
+        setShowAddModal(false);
+        setNewTask({ title: '', description: '', dueDate: '' });
+    };
+
+    const handleAddChange = (e) => {
+        const { name, value } = e.target;
+        setNewTask((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleAddTask = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const { title, description, dueDate } = newTask;
+            await axios.post('http://localhost:3000/api/tasks', {
+                title, description, dueDate, status: 'pendiente'
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            setTasks((prev) => [
+                ...prev,
+                { ...newTask, status: 'pendiente', createdAt: new Date(), id: Date.now() }, // Simular ID temporal
+            ]);
+            closeAddModal();
+        } catch (error) {
+            alert('Error al agregar la tarea');
+        }
+    };
+
     return (
         <div className="dashboard-container">
             <div className="sidebar">
@@ -161,6 +202,9 @@ const Dashboard = () => {
                     <label>Fecha de vencimiento:</label>
                     <input type="date" onChange={handleDateChange} />
                 </div>
+                <button className="add-task-button" onClick={openAddModal}>
+                    Agregar nueva tarea
+                </button>
             </div>
 
             <div className="main-content">
@@ -177,7 +221,7 @@ const Dashboard = () => {
                                 <li key={task.id}>
                                     <h3>{task.title}</h3>
                                     <p>{task.description}</p>
-                                    <p>Fecha de creación: {task.createdAt}</p>
+                                    <p>Fecha de creación: {new Date(task.createdAt).toLocaleDateString()}</p>
                                     <p>Fecha de vencimiento: {task.dueDate}</p>
                                     <p>Estado: {task.status}</p>
                                     {task.status === 'pendiente' && (
@@ -225,8 +269,39 @@ const Dashboard = () => {
                             <option value="completada">Completada</option>
                         </select>
                         <div className="modal-buttons">
-                            <button onClick={closeModal}>Cancelar</button>
-                            <button onClick={handleUpdate}>Actualizar</button>
+                            <button className="add-delete-button" onClick={closeModal}>Cancelar</button>
+                            <button className="add-button" onClick={handleUpdate}>Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showAddModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Agregar nueva tarea</h2>
+                        <input
+                            type="text"
+                            name="title"
+                            value={newTask.title}
+                            onChange={handleAddChange}
+                            placeholder="Título"
+                        />
+                        <textarea
+                            name="description"
+                            value={newTask.description}
+                            onChange={handleAddChange}
+                            placeholder="Descripción"
+                        />
+                        <input
+                            type="date"
+                            name="dueDate"
+                            value={newTask.dueDate}
+                            onChange={handleAddChange}
+                        />
+                        <div className="modal-buttons">
+                            <button className="add-delete-button" onClick={closeAddModal}>Cancelar</button>
+                            <button className="add-button" onClick={handleAddTask}>Agregar</button>
                         </div>
                     </div>
                 </div>

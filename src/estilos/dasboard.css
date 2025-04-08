@@ -14,6 +14,7 @@
     margin-bottom: 15px;
 }
 
+
 .filter-group {
     margin-bottom: 20px;
 }
@@ -94,6 +95,40 @@
 
 .delete-button:hover {
     background-color: #db5252;
+}
+.add-delete-button {
+    width: 50%;
+    background-color: #db5252;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    align-self: flex-start;
+    display: inline-block;
+}
+
+.add-delete-button:hover {
+    background-color: #db5252;
+}
+.add-button {
+    width: 50%;
+
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    align-self: flex-start;
+    display: inline-block;
+}
+
+.add-button:hover {
+
 }
 .edit {
     width: 10%;

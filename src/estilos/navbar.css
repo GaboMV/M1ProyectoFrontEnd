@@ -1,0 +1,36 @@
+/* navbar.css */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e293b;
+    padding: 10px 20px;
+
+    color: white;
+}
+
+.navbar-logo {
+    font-size: 24px;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.user-name {
+    flex-grow: 1; /* Hace que el nombre del usuario ocupe el espacio disponible */
+    text-align: center; /* Centra el texto */
+    font-weight: bold;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-links a:hover {
+    text-decoration: underline;
+}
