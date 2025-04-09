@@ -15,6 +15,7 @@ const Dashboard = () => {
     const [showAddModal, setShowAddModal] = useState(false); // Nuevo estado para el modal de agregar tarea
     const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' }); // Nuevo estado para la nueva tarea
     const navigate = useNavigate();
+    const [sidebarVisible, setSidebarVisible] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -179,8 +180,13 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="dashboard-container">
-            <div className="sidebar">
+
+
+    <div className="dashboard-container">
+        <button className="menu-toggle" onClick={() => setSidebarVisible(!sidebarVisible)}>
+            ☰ Menú
+        </button>
+        <div className={`sidebar ${sidebarVisible ? 'show' : ''}`}>
                 <h3>Filtros</h3>
                 <div className="filter-group">
                     <div className="search-container">
@@ -193,14 +199,14 @@ const Dashboard = () => {
                         />
                     </div>
                     <label>Estado:</label>
-                    <button onClick={() => resetFilters()}>Ver Todo</button>
-                    <button onClick={() => handleStatusFilter('pendiente')}>Pendiente</button>
-                    <button onClick={() => handleStatusFilter('en progreso')}>En Proceso</button>
-                    <button onClick={() => handleStatusFilter('completada')}>Completada</button>
+                    <button className="list-button" onClick={() => resetFilters()}>Ver Todo</button>
+                    <button className="list-button" onClick={() => handleStatusFilter('pendiente')}>Pendiente</button>
+                    <button className="list-button" onClick={() => handleStatusFilter('en progreso')}>En Proceso</button>
+                    <button className="list-button" onClick={() => handleStatusFilter('completada')}>Completada</button>
                 </div>
                 <div className="filter-group">
                     <label>Fecha de vencimiento:</label>
-                    <input type="date" onChange={handleDateChange} />
+                    <input type="date" className="date-input" onChange={handleDateChange} />
                 </div>
                 <button className="add-task-button" onClick={openAddModal}>
                     Agregar nueva tarea
@@ -218,11 +224,11 @@ const Dashboard = () => {
                             <li>No tienes tareas.</li>
                         ) : (
                             tasks.map((task) => (
-                                <li key={task.id}>
+                                <li key={task.id} className="task-item">
                                     <h3>{task.title}</h3>
                                     <p>{task.description}</p>
                                     <p>Fecha de creación: {new Date(task.createdAt).toLocaleDateString()}</p>
-                                    <p>Fecha de vencimiento: {task.dueDate}</p>
+                                    <p>Fecha de vencimiento: {new Date(task.dueDate).toLocaleDateString()}</p>
                                     <p>Estado: {task.status}</p>
                                     {task.status === 'pendiente' && (
                                         <button className="edit" onClick={() => openEditModal(task)}>Editar</button>
@@ -245,6 +251,7 @@ const Dashboard = () => {
                     <div className="modal-content">
                         <h2>Editar tarea</h2>
                         <input
+                            className="modal-input"
                             type="text"
                             name="title"
                             value={selectedTask.title}
@@ -252,18 +259,20 @@ const Dashboard = () => {
                             placeholder="Título"
                         />
                         <textarea
+                            className="modal-input"
                             name="description"
                             value={selectedTask.description}
                             onChange={handleChange}
                             placeholder="Descripción"
                         />
                         <input
+                            className="modal-input"
                             type="date"
                             name="dueDate"
                             value={selectedTask.dueDate.split('T')[0]}
                             onChange={handleChange}
                         />
-                        <select name="status" value={selectedTask.status} onChange={handleChange}>
+                        <select name="status" className="modal-select" value={selectedTask.status} onChange={handleChange}>
                             <option value="pendiente">Pendiente</option>
                             <option value="en progreso">En progreso</option>
                             <option value="completada">Completada</option>
@@ -281,6 +290,7 @@ const Dashboard = () => {
                     <div className="modal-content">
                         <h2>Agregar nueva tarea</h2>
                         <input
+                            className="modal-input"
                             type="text"
                             name="title"
                             value={newTask.title}
@@ -288,12 +298,14 @@ const Dashboard = () => {
                             placeholder="Título"
                         />
                         <textarea
+                            className="modal-input"
                             name="description"
                             value={newTask.description}
                             onChange={handleAddChange}
                             placeholder="Descripción"
                         />
                         <input
+                            className="modal-input"
                             type="date"
                             name="dueDate"
                             value={newTask.dueDate}

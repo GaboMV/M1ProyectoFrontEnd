@@ -1,17 +1,18 @@
-/* navbar.css */
-
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #1e293b;
     padding: 10px 20px;
-
     color: white;
+    position: relative; /* Para posicionar el menú desplegable */
 }
 
 .navbar-logo {
     font-size: 24px;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .navbar-links {
@@ -21,14 +22,56 @@
 }
 
 .user-name {
-    flex-grow: 1; /* Hace que el nombre del usuario ocupe el espacio disponible */
-    text-align: center; /* Centra el texto */
+    flex-grow: 1;
+    text-align: center;
     font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+        flex-grow: 0;
+        order: -1;
+    }
+
+    .navbar-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #1e293b;
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .navbar-links.active {
+        display: flex;
+    }
+
+    .user-name {
+        flex-grow: 0;
+        order: 2;
+    }
 }
 
 .navbar-links a {
     color: white;
     text-decoration: none;
+    padding: 5px 0;
 }
 
 .navbar-links a:hover {

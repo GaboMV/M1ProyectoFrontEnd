@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../Context/AuthContext'; // Importa el hook useAuth
+import { useAuth } from '../Context/AuthContext';
 import '../estilos/navbar.css';
 import axios from 'axios';
 
 const Navbar = () => {
-    const { isAuthenticated, logout } = useAuth(); // Usa el hook para obtener el estado de autenticación
-    const [userName, setUserName] = useState(''); // Estado para guardar el nombre del usuario
+    const { isAuthenticated, logout } = useAuth();
+    const [userName, setUserName] = useState('');
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Función para obtener los datos del usuario desde el backend
     const fetchUserData = async () => {
-        const token = localStorage.getItem('token'); // Obtener el token desde el almacenamiento local
-
+        const token = localStorage.getItem('token');
         if (token) {
             try {
                 const response = await axios.get('http://localhost:3000/api/auth/me', {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Pasar el token en el encabezado
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
-                setUserName(response.data.name); // Guardar el nombre del usuario en el estado
+                setUserName(response.data.name);
             } catch (error) {
                 console.error('Error al obtener los datos del usuario:', error);
             }
@@ -27,30 +24,52 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchUserData(); // Solo hacer la solicitud si el usuario está autenticado
-        }
-    }, [isAuthenticated]); // Se ejecutará cuando el estado de autenticación cambie
+        if (isAuthenticated) fetchUserData();
+    }, [isAuthenticated]);
 
     const handleLogout = () => {
-        logout(); // Elimina el token del almacenamiento local y actualiza el estado
-        window.location.reload(); // Recarga la página para que el Navbar se actualice
+        logout();
+        setIsMenuOpen(false);
+        window.location.reload();
     };
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
+
+    // Cerrar menú al cambiar tamaño de pantalla
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 768) setIsMenuOpen(false);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <nav className="navbar">
             <div className="navbar-logo">TaskManager</div>
-            <div className="navbar-links">
 
+            {isAuthenticated && (
+                <span className="user-name">Hola, {userName}</span>
+            )}
+
+            <button className="hamburger" onClick={toggleMenu}>
+                ☰
+            </button>
+
+            <div className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+                <Link to="/" onClick={closeMenu}>Inicio</Link>
                 {isAuthenticated ? (
                     <>
-                        <span className="user-name">Hola, {userName}</span> {/* Muestra el nombre del usuario */}
-                        <Link to="/dashboard">Dashboard</Link>
+                        <Link to="/dashboard" onClick={closeMenu}>Dashboard</Link>
                         <Link to="/" onClick={handleLogout}>Cerrar sesión</Link>
+
                     </>
                 ) : (
-                    <Link to="/register">Sign-in</Link>
-
+                    <>
+                    <Link to="/login" onClick={closeMenu}>Log-in</Link>
+                    <Link to="/register" onClick={closeMenu}>Sign-in</Link>
+                    </>
                 )
 
                 }

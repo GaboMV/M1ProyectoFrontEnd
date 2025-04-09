@@ -7,6 +7,7 @@ import Navbar from './componentes/Navbar';
 import Login from './Paginas/Login';
 import Register from './Paginas/Register';
 import Dashboard from './Paginas/Dashboard';
+import Home from './Paginas/Home';
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -35,15 +36,14 @@ function App() {
                 <Navbar isAuthenticated={isAuthenticated}
                         onLogout={handleLogout} />
                 <Routes>
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Home />} />
+
                     <Route
                         path="/login"
                         element={<Login onLogin={handleLogin} />}
                     />
                     <Route path="/register" element={<Register />} />
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard isAuthenticated={isAuthenticated} />}
+                    <Route path="/dashboard" element={<Dashboard isAuthenticated={isAuthenticated} />}
                     />
                 </Routes>
             </Router>
