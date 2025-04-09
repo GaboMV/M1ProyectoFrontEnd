@@ -18,6 +18,7 @@ const Dashboard = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
     useEffect(() => {
+
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
@@ -74,13 +75,21 @@ const Dashboard = () => {
         setDueDateFilter('');
     };
 
+
     const handleDateChange = (e) => {
-        const date = new Date(e.target.value).toISOString();
-        setDueDateFilter(date);
+        const date = new Date(e.target.value);
+        if (isNaN(date.getTime())) {
+            // Fecha inválida
+            setDueDateFilter('');
+            return;
+        }
+
+        // Formatea la fecha a YYYY-MM-DD sin hora
+        const formattedDate = date.toISOString().split('T')[0];
+        setDueDateFilter(formattedDate);
         setSearchTerm('');
         setStatusFilter('');
     };
-
     const resetFilters = () => {
         setSearchTerm('');
         setStatusFilter('');
@@ -104,6 +113,19 @@ const Dashboard = () => {
     const openEditModal = (task) => {
         setSelectedTask(task);
         setShowModal(true);
+    };
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Sin fecha';
+
+        const date = new Date(dateString);
+        // Ajuste para compensar la zona horaria
+        const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+
+        return adjustedDate.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     };
 
     const closeModal = () => {
@@ -160,9 +182,15 @@ const Dashboard = () => {
     const handleAddTask = async () => {
         const token = localStorage.getItem('token');
         try {
-            const { title, description, dueDate } = newTask;
+            // Ajuste para la fecha
+            const dueDate = new Date(newTask.dueDate);
+            dueDate.setDate(dueDate.getDate() + 1); // Añadir un día para compensar
+
             await axios.post('http://localhost:3000/api/tasks', {
-                title, description, dueDate, status: 'pendiente'
+                title: newTask.title,
+                description: newTask.description,
+                dueDate: dueDate.toISOString().split('T')[0], // Formato YYYY-MM-DD
+                status: 'pendiente'
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -171,7 +199,13 @@ const Dashboard = () => {
 
             setTasks((prev) => [
                 ...prev,
-                { ...newTask, status: 'pendiente', createdAt: new Date(), id: Date.now() }, // Simular ID temporal
+                {
+                    ...newTask,
+                    dueDate: dueDate.toISOString(), // Mantener consistencia
+                    status: 'pendiente',
+                    createdAt: new Date(),
+                    id: Date.now()
+                },
             ]);
             closeAddModal();
         } catch (error) {
@@ -179,14 +213,15 @@ const Dashboard = () => {
         }
     };
 
+
     return (
 
 
-    <div className="dashboard-container">
-        <button className="menu-toggle" onClick={() => setSidebarVisible(!sidebarVisible)}>
-            ☰ Menú
-        </button>
-        <div className={`sidebar ${sidebarVisible ? 'show' : ''}`}>
+        <div className="dashboard-container">
+            <button className="menu-toggle" onClick={() => setSidebarVisible(!sidebarVisible)}>
+                ☰ Menú
+            </button>
+            <div className={`sidebar ${sidebarVisible ? 'show' : ''}`}>
                 <h3>Filtros</h3>
                 <div className="filter-group">
                     <div className="search-container">
@@ -228,7 +263,7 @@ const Dashboard = () => {
                                     <h3>{task.title}</h3>
                                     <p>{task.description}</p>
                                     <p>Fecha de creación: {new Date(task.createdAt).toLocaleDateString()}</p>
-                                    <p>Fecha de vencimiento: {new Date(task.dueDate).toLocaleDateString()}</p>
+                                    <p>Fecha de vencimiento: {formatDate(task.dueDate)}</p>
                                     <p>Estado: {task.status}</p>
                                     {task.status === 'pendiente' && (
                                         <button className="edit" onClick={() => openEditModal(task)}>Editar</button>
@@ -237,7 +272,7 @@ const Dashboard = () => {
                                         <button className="edit" onClick={() => openEditModal(task)}>Editar</button>
                                     )}
                                     {task.status === 'completada' && (
-                                        <button className="delete-button" onClick={() => handleDelete(task.id)}>Eliminar</button>
+                                        <button className="delete-button-dashboard" onClick={() => handleDelete(task.id)}>Eliminar</button>
                                     )}
                                 </li>
                             ))
@@ -278,8 +313,9 @@ const Dashboard = () => {
                             <option value="completada">Completada</option>
                         </select>
                         <div className="modal-buttons">
-                            <button className="add-delete-button" onClick={closeModal}>Cancelar</button>
                             <button className="add-button" onClick={handleUpdate}>Actualizar</button>
+                            <button className="add-delete-button" onClick={closeModal}>Cancelar</button>
+
                         </div>
                     </div>
                 </div>
@@ -312,8 +348,9 @@ const Dashboard = () => {
                             onChange={handleAddChange}
                         />
                         <div className="modal-buttons">
-                            <button className="add-delete-button" onClick={closeAddModal}>Cancelar</button>
                             <button className="add-button" onClick={handleAddTask}>Agregar</button>
+                            <button className="add-delete-button" onClick={closeAddModal}>Cancelar</button>
+
                         </div>
                     </div>
                 </div>

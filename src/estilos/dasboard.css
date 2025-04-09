@@ -152,9 +152,11 @@ html, body {
 .add-button {
     background-color: #4a9af4;
 }
+.add-delete-button:hover{
+    background-color: #ac0303;
+}
 
 .delete-button:hover,
-.add-delete-button:hover,
 .add-button:hover {
     opacity: 0.9;
 }
@@ -162,6 +164,7 @@ html, body {
 .edit {
     display: block;
     width: 70px;
+    justify-content: center;
     padding: 10px;
     background-color: #4a9af4;
     border: none;
@@ -222,9 +225,22 @@ html, body {
     color: white;
 }
 
-.delete-button {
-    background-color: #dc3545;
-    color: white;
+.delete-button-dashboard {
+    display: block;
+    width: 90px;
+    padding: 10px;
+    justify-content: center;
+    background-color: #db5252;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.delete-button-dashboard:hover {
+    background-color: #ac0303;
 }
 
 @media (max-width: 600px) {
@@ -268,7 +284,15 @@ html, body {
         width: 95%;
     }
 }
-
+.alerts-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 /* JS Sugerido para toggle menu */
 /*
 <script>
