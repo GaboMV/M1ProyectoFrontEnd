@@ -18,43 +18,11 @@ const Dashboard = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
     useEffect(() => {
-
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
             return;
         }
-
-        const fetchTasks = async () => {
-            setLoading(true);
-            try {
-                let url = 'http://localhost:3000/api/tasks';
-
-                if (searchTerm) {
-                    url = `http://localhost:3000/api/tasks/search/${searchTerm}`;
-                } else if (statusFilter) {
-                    url = `http://localhost:3000/api/tasks/status/${statusFilter}`;
-                } else if (dueDateFilter) {
-                    url = `http://localhost:3000/api/tasks/dueDate/${dueDateFilter}`;
-                }
-
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setTasks(response.data);
-            } catch (err) {
-                if (err.response && err.response.status === 404) {
-                    setTasks([]);
-                    setError(null);
-                } else {
-                    setError('No se pudieron obtener las tareas');
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
 
         const delayDebounce = setTimeout(() => {
             fetchTasks();
@@ -63,6 +31,38 @@ const Dashboard = () => {
         return () => clearTimeout(delayDebounce);
     }, [searchTerm, statusFilter, dueDateFilter, navigate]);
 
+    const fetchTasks = async () => {
+        const token = localStorage.getItem('token');
+        setLoading(true);
+        try {
+            let url = 'http://localhost:3000/api/tasks';
+
+            if (searchTerm) {
+                url = `http://localhost:3000/api/tasks/search/${searchTerm}`;
+            } else if (statusFilter) {
+                url = `http://localhost:3000/api/tasks/status/${statusFilter}`;
+            } else if (dueDateFilter) {
+                url = `http://localhost:3000/api/tasks/dueDate/${dueDateFilter}`;
+            }
+
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setTasks(response.data);
+            setError(null);
+        } catch (err) {
+            if (err.response && err.response.status === 404) {
+                setTasks([]);
+                setError(null);
+            } else {
+                setError('No se pudieron obtener las tareas');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setStatusFilter('');
@@ -182,14 +182,13 @@ const Dashboard = () => {
     const handleAddTask = async () => {
         const token = localStorage.getItem('token');
         try {
-            // Ajuste para la fecha
             const dueDate = new Date(newTask.dueDate);
-            dueDate.setDate(dueDate.getDate() + 1); // Añadir un día para compensar
+            dueDate.setDate(dueDate.getDate() + 1);
 
             await axios.post('http://localhost:3000/api/tasks', {
                 title: newTask.title,
                 description: newTask.description,
-                dueDate: dueDate.toISOString().split('T')[0], // Formato YYYY-MM-DD
+                dueDate: dueDate.toISOString().split('T')[0],
                 status: 'pendiente'
             }, {
                 headers: {
@@ -197,16 +196,7 @@ const Dashboard = () => {
                 }
             });
 
-            setTasks((prev) => [
-                ...prev,
-                {
-                    ...newTask,
-                    dueDate: dueDate.toISOString(), // Mantener consistencia
-                    status: 'pendiente',
-                    createdAt: new Date(),
-                    id: Date.now()
-                },
-            ]);
+            await fetchTasks(); // Recargar la lista de tareas actualizada
             closeAddModal();
         } catch (error) {
             alert('Error al agregar la tarea');
