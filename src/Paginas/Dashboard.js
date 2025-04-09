@@ -12,8 +12,8 @@ const Dashboard = () => {
     const [dueDateFilter, setDueDateFilter] = useState('');
     const [selectedTask, setSelectedTask] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false); // Nuevo estado para el modal de agregar tarea
-    const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' }); // Nuevo estado para la nueva tarea
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' });
     const navigate = useNavigate();
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
@@ -74,7 +74,6 @@ const Dashboard = () => {
         setSearchTerm('');
         setDueDateFilter('');
     };
-
 
     const handleDateChange = (e) => {
         const date = new Date(e.target.value);
@@ -196,7 +195,7 @@ const Dashboard = () => {
                 }
             });
 
-            await fetchTasks(); // Recargar la lista de tareas actualizada
+            await fetchTasks();
             closeAddModal();
         } catch (error) {
             alert('Error al agregar la tarea');

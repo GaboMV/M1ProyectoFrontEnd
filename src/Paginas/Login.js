@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../estilos/login.css'; // Importar el archivo CSS
+import '../estilos/login.css';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../Context/AuthContext'; // Importa el hook useAuth
+import { useAuth } from '../Context/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth(); // Obtén la función login del contexto
+    const { login } = useAuth();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -32,7 +32,7 @@ const Login = () => {
             });
             const token = response.data.token;
             localStorage.setItem('token', token);
-            login(token); // Llama a la función login del contexto
+            login(token);
             setLoading(false);
             navigate('/dashboard');
         } catch (err) {

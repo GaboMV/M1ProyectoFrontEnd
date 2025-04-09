@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Para redirigir después del registro
-import '../estilos/Register.css'; // Importar el archivo CSS
+import { useNavigate } from 'react-router-dom';
+import '../estilos/Register.css';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -9,7 +9,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // Redirigir a la página de login tras registro
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,6 +24,29 @@ const Register = () => {
             });
             setLoading(false);
             // Redirigir al login tras registro exitoso
+            navigate('/login');
+        } catch (err) {
+            setLoading(false);
+            if (err.response) {
+                setError(err.response.data.error);
+            } else {
+                setError('Ocurrió un error. Intenta de nuevo.');
+            }
+        }
+        if (password.length < 4) {
+            setError('La contraseña debe tener al menos 4 caracteres.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await axios.post('http://localhost:3000/api/auth/register', {
+                name,
+                email,
+                password
+            });
+            setLoading(false);
             navigate('/login');
         } catch (err) {
             setLoading(false);

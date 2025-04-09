@@ -1,9 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// Crear el contexto de autenticación
 const AuthContext = createContext();
 
-// Proveedor de contexto
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -31,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Hook personalizado para usar el contexto
 export const useAuth = () => {
     return useContext(AuthContext);
 };

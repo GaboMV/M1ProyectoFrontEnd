@@ -1,4 +1,4 @@
-// src/App.js
+
 import React, {useEffect, useState} from 'react';
 import estilo from './estilos/estilo.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -12,7 +12,7 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        // Verificar si el token está en el localStorage para determinar si el usuario está autenticado
+
         const token = localStorage.getItem('token');
         if (token) {
             setIsAuthenticated(true);
@@ -20,18 +20,18 @@ function App() {
     }, []);
 
     const handleLogin = () => {
-        setIsAuthenticated(true); // Cuando el usuario inicie sesión
+        setIsAuthenticated(true);
     };
 
     const handleLogout = () => {
-        setIsAuthenticated(false); // Cuando el usuario cierre sesión
+        setIsAuthenticated(false);
         localStorage.removeItem('token');
     };
     return (
 
         <AuthProvider>
             <div className={estilo.container}>
-            {/* Aquí va tu Navbar, rutas, etc. */}
+
             <Router>
                 <Navbar isAuthenticated={isAuthenticated}
                         onLogout={handleLogout} />

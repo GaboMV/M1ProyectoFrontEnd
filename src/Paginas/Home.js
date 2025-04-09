@@ -22,17 +22,17 @@ const Home = () => {
                 <h2 className="section-title">Tenemos lo que necesitas</h2>
                 <div className="features-grid">
                     <div className="feature-card">
-                        <div className="feature-icon">🚀</div>
+                        <div className="feature-icon"></div>
                         <h3>Filtrado por fechas</h3>
                         <p>Puedes filtrar tus tareas por la fecha que quieras</p>
                     </div>
                     <div className="feature-card">
-                        <div className="feature-icon">📊</div>
+                        <div className="feature-icon"></div>
                         <h3>Filtrado por estado</h3>
                         <p>Puedes organizar tus tareas dependiendo del estado en el que se encuentren</p>
                     </div>
                     <div className="feature-card">
-                        <div className="feature-icon">🤝</div>
+                        <div className="feature-icon"></div>
                         <h3>edita y crea nuevas tareas</h3>
                         <p>Puedes ingresar todas tus tareas y tener control sobre ellas</p>
                     </div>
