@@ -11,19 +11,20 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:3000/api/auth/register', {
+            const response = await axios.post(`${API_BASE_URL}/auth/register`, {
                 name,
                 email,
                 password
             });
             setLoading(false);
-            // Redirigir al login tras registro exitoso
             navigate('/login');
         } catch (err) {
             setLoading(false);
@@ -41,7 +42,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:3000/api/auth/register', {
+            const response = await axios.post(`${API_BASE_URL}/auth/register`, {
                 name,
                 email,
                 password

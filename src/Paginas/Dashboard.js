@@ -16,6 +16,7 @@ const Dashboard = () => {
     const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' });
     const navigate = useNavigate();
     const [sidebarVisible, setSidebarVisible] = useState(false);
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -35,14 +36,14 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
         setLoading(true);
         try {
-            let url = 'http://localhost:3000/api/tasks';
+            let url = `${API_BASE_URL}/tasks`;
 
             if (searchTerm) {
-                url = `http://localhost:3000/api/tasks/search/${searchTerm}`;
+                url = `${API_BASE_URL}/tasks/search/${searchTerm}`;
             } else if (statusFilter) {
-                url = `http://localhost:3000/api/tasks/status/${statusFilter}`;
+                url = `${API_BASE_URL}/tasks/status/${statusFilter}`;
             } else if (dueDateFilter) {
-                url = `http://localhost:3000/api/tasks/dueDate/${dueDateFilter}`;
+                url = `${API_BASE_URL}/tasks/dueDate/${dueDateFilter}`;
             }
 
             const response = await axios.get(url, {
@@ -98,7 +99,7 @@ const Dashboard = () => {
     const handleDelete = async (id) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.delete(`http://localhost:3000/api/tasks/${id}`, {
+            await axios.delete(`${API_BASE_URL}/tasks/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -136,7 +137,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
         try {
             const { id, title, description, dueDate, status } = selectedTask;
-            await axios.put(`http://localhost:3000/api/tasks/${id}`, {
+            await axios.put(`${API_BASE_URL}/tasks/${id}`, {
                 title, description, dueDate, status
             }, {
                 headers: {
@@ -184,7 +185,7 @@ const Dashboard = () => {
             const dueDate = new Date(newTask.dueDate);
             dueDate.setDate(dueDate.getDate() + 1);
 
-            await axios.post('http://localhost:3000/api/tasks', {
+            await axios.post(`${API_BASE_URL}/tasks`, {
                 title: newTask.title,
                 description: newTask.description,
                 dueDate: dueDate.toISOString().split('T')[0],

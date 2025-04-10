@@ -12,6 +12,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -26,7 +27,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:3000/api/auth/login', {
+            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
                 email,
                 password
             });

@@ -8,12 +8,13 @@ const Navbar = () => {
     const { isAuthenticated, logout } = useAuth();
     const [userName, setUserName] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const fetchUserData = async () => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await axios.get('http://localhost:3000/api/auth/me', {
+                const response = await axios.get(`${API_BASE_URL}/auth/me`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setUserName(response.data.name);
